@@ -290,20 +290,21 @@ namespace LinqConsoleApp
         public void Task7()
         {
 
-            var res = (from e in Emps
-                       orderby e.Job
-                       select new
-                       {
-                           EmployeeJob = e.Job,
-                           EmployeeNumber = Emps.Count(e => e.Job != null)
-                       }).ToList();
+            var res = from emp in Emps
+                      group emp by emp.Job into e
+                      select new
+                      {
+                          EmployeeJob = e.Key,
+                          EmployeeNumber = e.Count()
+                      };
 
-            var res1 = Emps.OrderBy(e => e.Job)
-                .Select(e => new
-                {
-                    EmployeeJob = e.Job,
-                    EmployeeNumber = Emps.Count(e => e.Job != null)
-                }).ToList();
+
+            var res1 = Emps.GroupBy(emp => emp.Job)
+            .Select(e => new
+            {
+                EmployeeJob = e.Key,
+                EmployeeNumber = e.Count()
+            }).ToList();
 
             int i = 0;
         }
@@ -381,12 +382,15 @@ namespace LinqConsoleApp
         //Find the employee with the highest salary using the Aggregate () method
         public void Task11()
         {
-            var maxSal = Emps.Aggregate((e1, e2) => new Emp
+
+            var res = Emps.Aggregate((e1, e2) => e2.Salary > e1.Salary ? e2 : e1);
+
+            /*var maxSal = Emps.Aggregate((e1, e2) => new Emp
             {
                 Salary = e2.Salary > e1.Salary ? e2.Salary : e1.Salary,
             });
 
-            var res = Emps.Where(e => e.Salary == maxSal.Salary);
+            var res = Emps.Where(e => e.Salary == maxSal.Salary);*/
 
             int i = 0;
         }
